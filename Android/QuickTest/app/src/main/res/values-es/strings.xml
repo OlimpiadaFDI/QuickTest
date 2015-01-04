@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="register">Registrarse</string>
+    <string name="login">Conectarse</string>
+    <string name="login_text">Conectarse or registrarse</string>
+    <string name="action_settings">Preferencias</string>
+    <string name="answer1">Respuesta 1</string>
+    <string name="answer2">Respuesta 2</string>
+    <string name="answer3">Respuesta 3</string>
+    <string name="answer4">Respuesta 4</string>
+    <string name="question">Pregunta</string>
+    <string name="questionsCount">Pregunta %1$d de %2$d</string>
+    <string name="Version">Versión %1$s</string>
+    <string name="CheckBox_Remember">Recordar los detalles de mi cuenta</string>
+    <string name="connected">Recuperando las preguntas de nuestros servidores</string>
+    <string name="correct_answer">¡Correcta!</string>
+    <string name="incorrect_answer">¡Respuesta incorrecta!</string>
+    <string name="not_connected">No estamos conectados a Internet</string>
+</resources>
