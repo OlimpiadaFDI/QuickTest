@@ -10,7 +10,7 @@ import android.view.MenuItem;
 
 import com.olimpiadafdi.quicktest.app.LoginFragment;
 import com.olimpiadafdi.quicktest.app.MainFragment;
-import com.olimpiadafdi.quicktest.data.Storage;
+import com.olimpiadafdi.quicktest.data.SharedPrefInfo;
 
 public class MainActivity extends ActionBarActivity
         implements LoginFragment.loginInterface{
@@ -55,15 +55,15 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void userDetails(String nick, String pass, boolean remember)
     {
-        Storage.SharedPrefInfo info = Storage.getInstance().getSharedPrefInfo();
+        SharedPrefInfo info = new SharedPrefInfo();
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences(info.PREF_NAME, info.PRIVATE_MODE);
         SharedPreferences.Editor editor = pref.edit();
 
         if (!remember){
-            editor.remove(info.KEY_NICK);
-            editor.remove(info.KEY_PASSWORD);
-            //editor.clear();
+            //editor.remove(info.KEY_NICK);
+            //editor.remove(info.KEY_PASSWORD);
+            editor.clear();
         }
         else {
             editor.putString(info.KEY_NICK, nick);

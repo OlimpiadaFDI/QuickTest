@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.olimpiadafdi.quicktest.R;
 import com.olimpiadafdi.quicktest.connection.JsonRequest;
 import com.olimpiadafdi.quicktest.data.Answer;
+import com.olimpiadafdi.quicktest.data.CalculaInsignias;
 import com.olimpiadafdi.quicktest.data.Question;
 import com.olimpiadafdi.quicktest.data.Storage;
 
@@ -31,8 +32,11 @@ import com.olimpiadafdi.quicktest.data.Storage;
  */
 public class MainFragment extends Fragment {
 
+    private static String GETQUESTION = "getQuestion";
+
+    private CalculaInsignias calculaInsignias;
+
     private Activity activity;
-    private static String url_getQuestion = "http://ssii2014.e-ucm.es:80/OlimpiadaFDIServices/rest/quickTest/preguntaAleatoria";
     private Button button1;
     private Button button2;
     private Button button3;
@@ -66,6 +70,8 @@ public class MainFragment extends Fragment {
         Context context = activity.getApplicationContext();
         String version = activity.getString(R.string.Version, Storage.getInstance().getVersion());
         textView_version.setText(version);
+
+        calculaInsignias = new CalculaInsignias(activity.getApplicationContext());
 
         this.handleButtons();
         getQuestion();
@@ -113,6 +119,10 @@ public class MainFragment extends Fragment {
     public void checkAnswer(int answer){
         Question q = Storage.getInstance().getQuestion();
         Context context = activity.getApplicationContext();
+
+        //Calculamos las insignias:
+        calculaInsignias.nuevaPregunta(q, answer);
+
         if (answer == q.getCorrect()){
             String text = context.getString(R.string.correct_answer);
             int duration = Toast.LENGTH_SHORT;
@@ -121,7 +131,7 @@ public class MainFragment extends Fragment {
             toast.show();
 
             if (Storage.getInstance().getQuestionsAlreadyAsked().size()<10){
-                JsonRequest jsonRequest = new JsonRequest(url_getQuestion, context, updateDataSuccess, updateDataError, "getQuestion");
+                JsonRequest jsonRequest = new JsonRequest(GETQUESTION, context, updateDataSuccess, updateDataError, null);
                 jsonRequest.request();
             }
 
@@ -158,7 +168,7 @@ public class MainFragment extends Fragment {
 
         //Retrieving the next question
 
-        JsonRequest jsonRequest = new JsonRequest(url_getQuestion, context, updateDataSuccess, updateDataError, "getQuestion");
+        JsonRequest jsonRequest = new JsonRequest(GETQUESTION, context, updateDataSuccess, updateDataError, null);
         jsonRequest.request();
     }
 

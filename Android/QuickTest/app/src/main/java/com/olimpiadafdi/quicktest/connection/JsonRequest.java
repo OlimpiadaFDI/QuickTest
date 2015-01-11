@@ -12,7 +12,14 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,23 +28,38 @@ import java.io.IOException;
 
 public class JsonRequest {
 
+    private static String GETQUESTION = "getQuestion";
+    private static String url_getQuestion = "http://ssii2014.e-ucm.es:80/OlimpiadaFDIServices/rest/quickTest/preguntaAleatoria";
+
+    private static String LOGIN = "login";
+    private static String url_login = "http://ssii2014.e-ucm.es:80//OlimpiadaFDIServices/rest/insignias/logginUsuario";
+
     private String uri;
-    private String reason;
+    private String purpose;
+    private String[] data;
     private Runnable updateDataSuccess;
     private Runnable updateDataError;
 
-    public JsonRequest(String uri, Context context, Runnable updateDataSuccess,
-                       Runnable updateDataError, String reason) {
-        this.uri = uri;
+    public JsonRequest(String purpose, Context context, Runnable updateDataSuccess,
+                       Runnable updateDataError, String[] data) {
+
+        if (purpose.equalsIgnoreCase(GETQUESTION))
+            this.uri = url_getQuestion;
+
+        else if (purpose.equalsIgnoreCase(LOGIN))
+            this.uri = url_login;
+
+        this.purpose = purpose;
+        this.data = data;
         this.updateDataSuccess = updateDataSuccess;
         this.updateDataError = updateDataError;
-        this.reason = reason;
+
     }
 
     public void request() {
         String input[] = new String[2];
         input[0] = this.uri;
-        input[1] = this.reason;
+        input[1] = this.purpose;
         new DownloadDataTask().execute(input);
     }
 
@@ -46,23 +68,46 @@ public class JsonRequest {
         // JSON-Parser
         @Override
         protected Boolean doInBackground(String... input) {
-            Log.e("QuickTest", "Do in background");
-            String html = loadData(input[0]);
-            if (html == null) {
-                return false;
+            String uri = input[0];
+            String purpose = input[1];
+            boolean result = true;
+
+            // Login
+            if (purpose.equalsIgnoreCase(LOGIN)){
+                Log.i("QuickTest", "Do in background - " + LOGIN);
+                JSONObject json = writeJSON_login();
+                String response = POST(uri, json.toString());
+                if (response == null) {
+                    result = false;
+                }
+                Log.i("QuickTest", "Parsing - " + LOGIN);
+                result = HtmlParser.checkLogin(response);
             }
 
-            if (input[1].equalsIgnoreCase("getQuestion")) {
-                Log.e("QuickTest", "parsing the question");
-                Question q = HtmlParser.parseQuestion(html);
+            // Get Question
+            else if (purpose.equalsIgnoreCase(GETQUESTION)) {
+                Log.i("QuickTest", "Do in background - " + GETQUESTION);
+                String response = GET(uri);
+                if (response == null) {
+                    result = false;
+                }
+                Log.i("QuickTest", "Parsing - " + GETQUESTION);
+                Question q = HtmlParser.parseQuestion(response);
                 Storage.getInstance().setQuestion(q);
             }
 
-            return true;
+            return result;
         }
 
-        private String loadData(String url) {
-            HttpClient httpClient = new DefaultHttpClient();
+        private String GET(String url) {
+            String output = null;
+
+            // Create a new HttpClient and Post Header
+            HttpParams myParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(myParams, 10000);
+            HttpConnectionParams.setSoTimeout(myParams, 10000);
+            HttpClient httpClient = new DefaultHttpClient(myParams);
+
             HttpGet httpGet = new HttpGet(url);
             HttpResponse httpResponse;
 
@@ -88,8 +133,7 @@ public class JsonRequest {
                     return html;
                     */
 
-                    String output = EntityUtils.toString(httpEntity);
-                    return output;
+                    output = EntityUtils.toString(httpEntity);
                 }
             } catch (ClientProtocolException e) {
                 Log.e("QuickTest", "There was a protocol based error", e);
@@ -97,7 +141,39 @@ public class JsonRequest {
                 Log.e("QuickTest", "There was an IO Stream related error", e);
             }
             publishProgress();
-            return null;
+            return output;
+        }
+
+        private String POST(String url, String json) {
+            String output = null;
+
+            // Create a new HttpClient and Post Header
+            HttpParams myParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(myParams, 10000);
+            HttpConnectionParams.setSoTimeout(myParams, 10000);
+            HttpClient httpClient = new DefaultHttpClient(myParams);
+
+            try {
+
+                HttpPost httpPost = new HttpPost(url);
+                httpPost.setHeader("Content-type", "application/json");
+
+                StringEntity se = new StringEntity(json);
+                se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+                httpPost.setEntity(se);
+
+                HttpResponse httpResponse = httpClient.execute(httpPost);
+                HttpEntity httpEntity = httpResponse.getEntity();
+                if (httpEntity != null) {
+                    output = EntityUtils.toString(httpEntity);
+                }
+            } catch (ClientProtocolException e) {
+                Log.e("QuickTest", "There was a protocol based error", e);
+            } catch (IOException e) {
+                Log.e("QuickTest", "There was an IO Stream related error", e);
+            }
+            publishProgress();
+            return output;
         }
 
         protected void onProgressUpdate(Integer... progress) {
@@ -114,23 +190,20 @@ public class JsonRequest {
         }
     }
 
-    public JSONObject writeJSON_question() {
+    public JSONObject writeJSON_login() {
         JSONObject object = new JSONObject();
         try {
-            object.put("name", "Jack Hack");
+            object.put("nombre", data[0]);
+            object.put("pass", data[1]);
+
+            /*object.put("nombre", "Jack Hack");
             object.put("score", new Integer(200));
             object.put("current", new Double(152.32));
-            object.put("nickname", "Hacker");
+            object.put("nickname", "Hacker");*/
         } catch (JSONException e) {
             e.printStackTrace();
         }
         System.out.println(object);
-        return object;
-    }
-
-    public JSONObject writeJSON_score() {
-        JSONObject object = new JSONObject();
-
         return object;
     }
 }

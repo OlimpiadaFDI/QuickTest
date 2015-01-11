@@ -1,6 +1,7 @@
 package com.olimpiadafdi.quicktest.app;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,11 +11,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.olimpiadafdi.quicktest.R;
+import com.olimpiadafdi.quicktest.connection.JsonRequest;
+import com.olimpiadafdi.quicktest.data.SharedPrefInfo;
 import com.olimpiadafdi.quicktest.data.Storage;
 
 public class LoginFragment extends Fragment {
+
+    private static String LOGIN = "login";
+
+    String nick;
+    String pass;
+    boolean remember;
 
     private Activity activity;
     private EditText editText_nick;
@@ -42,7 +52,7 @@ public class LoginFragment extends Fragment {
         this.button_register = (Button) rootView.findViewById(R.id.button_register);
         this.button_login = (Button) rootView.findViewById(R.id.button_login);
 
-        Storage.SharedPrefInfo info = Storage.getInstance().getSharedPrefInfo();
+        SharedPrefInfo info = new SharedPrefInfo();
 
         SharedPreferences pref = activity.getApplicationContext().getSharedPreferences(info.PREF_NAME, info.PRIVATE_MODE);
         if (pref.contains(info.KEY_NICK) && pref.contains(info.KEY_PASSWORD)){
@@ -72,18 +82,39 @@ public class LoginFragment extends Fragment {
         View.OnClickListener handlerLogin = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nick = editText_nick.getText().toString();
-                String pass = editText_pass.getText().toString();
-                boolean remember = checkBox_remember.isChecked();
-                try{
-                    ((loginInterface) activity).userDetails(nick, pass, remember);
-                }catch (ClassCastException e){
-                    e.printStackTrace();
-                }
+                nick = editText_nick.getText().toString();
+                pass = editText_pass.getText().toString();
+                remember = checkBox_remember.isChecked();
+
+                String s[] = {nick, pass};
+
+                JsonRequest jsonRequest = new JsonRequest(LOGIN, activity.getApplicationContext(), updateDataSuccess, updateDataError, s);
+                jsonRequest.request();
             }
         };
 
         button_register.setOnClickListener(handlerRegister);
         button_login.setOnClickListener(handlerLogin);
     }
+
+    private Runnable updateDataSuccess = new Runnable() {
+        public void run() {
+            try{
+                ((loginInterface) activity).userDetails(nick, pass, remember);
+            }catch (ClassCastException e){
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private Runnable updateDataError = new Runnable() {
+        public void run() {
+            Context context = activity.getApplicationContext();
+            String text = Storage.getInstance().getResultErrorLogin();
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
+    };
 }
