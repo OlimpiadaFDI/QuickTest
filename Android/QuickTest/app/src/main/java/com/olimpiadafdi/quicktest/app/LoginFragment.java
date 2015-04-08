@@ -30,7 +30,6 @@ public class LoginFragment extends Fragment {
     private EditText editText_nick;
     private EditText editText_pass;
     private CheckBox checkBox_remember;
-    private Button button_register;
     private Button button_login;
 
     public LoginFragment(){}
@@ -49,7 +48,6 @@ public class LoginFragment extends Fragment {
         this.editText_nick = (EditText) rootView.findViewById(R.id.editText_nick);
         this.editText_pass = (EditText) rootView.findViewById(R.id.editText_pass);
         this.checkBox_remember = (CheckBox) rootView.findViewById(R.id.checkBox_remember);
-        this.button_register = (Button) rootView.findViewById(R.id.button_register);
         this.button_login = (Button) rootView.findViewById(R.id.button_login);
 
         SharedPrefInfo info = new SharedPrefInfo();
@@ -72,13 +70,6 @@ public class LoginFragment extends Fragment {
     }
 
     private void handleButtons() {
-        View.OnClickListener handlerRegister = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        };
-
         View.OnClickListener handlerLogin = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,14 +77,14 @@ public class LoginFragment extends Fragment {
                 pass = editText_pass.getText().toString();
                 remember = checkBox_remember.isChecked();
 
+                Storage.getInstance().setNick(nick);
+
                 String s[] = {nick, pass};
 
                 JsonRequest jsonRequest = new JsonRequest(LOGIN, activity.getApplicationContext(), updateDataSuccess, updateDataError, s);
                 jsonRequest.request();
             }
         };
-
-        button_register.setOnClickListener(handlerRegister);
         button_login.setOnClickListener(handlerLogin);
     }
 

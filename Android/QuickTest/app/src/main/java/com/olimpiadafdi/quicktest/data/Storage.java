@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Storage {
 
-    private static final String VERSION = "1.5";
+    private static final String VERSION = "2.2";
 
     private static Storage ourInstance = new Storage();
 
@@ -17,6 +17,7 @@ public class Storage {
 
     // -------------------------------------------------------------------------------
 
+    String nick;
     private String resultErrorLogin;
     private ArrayList<Integer> questionsAlreadyAsked = new ArrayList<Integer>();
     private Question question;
@@ -24,6 +25,16 @@ public class Storage {
     public String getVersion(){
         return VERSION;
     }
+
+
+    public void setNick(String s){
+        this.nick = s;
+    }
+
+    public String getNick(){
+        return this.nick;
+    }
+
 
     public void setResultErrorLogin(String s){
         this.resultErrorLogin = s;
@@ -33,6 +44,7 @@ public class Storage {
         return resultErrorLogin;
     }
 
+
     public Question getQuestion() {
         return question;
     }
@@ -40,6 +52,7 @@ public class Storage {
     public void setQuestion(Question question) {
         this.question = question;
     }
+
 
     public ArrayList<Integer> getQuestionsAlreadyAsked() {
         return questionsAlreadyAsked;

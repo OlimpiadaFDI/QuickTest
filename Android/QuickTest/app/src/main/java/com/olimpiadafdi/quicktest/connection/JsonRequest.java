@@ -34,6 +34,9 @@ public class JsonRequest {
     private static String LOGIN = "login";
     private static String url_login = "http://ssii2014.e-ucm.es:80//OlimpiadaFDIServices/rest/insignias/logginUsuario";
 
+    private static String UNLOCKBADGE = "unlockBadge";
+    private static String url_unlockBadge = "http://ssii2014.e-ucm.es:80//OlimpiadaFDIServices/rest/insignias/asignarInsigniaAUsuario";
+
     private String uri;
     private String purpose;
     private String[] data;
@@ -48,6 +51,9 @@ public class JsonRequest {
 
         else if (purpose.equalsIgnoreCase(LOGIN))
             this.uri = url_login;
+
+        else if (purpose.equalsIgnoreCase(UNLOCKBADGE))
+            this.uri = url_unlockBadge;
 
         this.purpose = purpose;
         this.data = data;
@@ -94,6 +100,17 @@ public class JsonRequest {
                 Log.i("QuickTest", "Parsing - " + GETQUESTION);
                 Question q = HtmlParser.parseQuestion(response);
                 Storage.getInstance().setQuestion(q);
+            }
+
+            if (purpose.equalsIgnoreCase(UNLOCKBADGE)){
+                Log.i("QuickTest", "Do in background - " + UNLOCKBADGE);
+                JSONObject json = writeJSON_unlockBadge();
+                String response = POST(uri, json.toString());
+                if (response == null) {
+                    result = false;
+                }
+                Log.i("QuickTest", "Parsing - " + UNLOCKBADGE);
+                result = HtmlParser.checkLogin(response);
             }
 
             return result;
@@ -195,6 +212,23 @@ public class JsonRequest {
         try {
             object.put("nombre", data[0]);
             object.put("pass", data[1]);
+
+            /*object.put("nombre", "Jack Hack");
+            object.put("score", new Integer(200));
+            object.put("current", new Double(152.32));
+            object.put("nickname", "Hacker");*/
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        System.out.println(object);
+        return object;
+    }
+
+    public JSONObject writeJSON_unlockBadge() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("nombreUsuario", data[0]);
+            object.put("idInsignia", data[1]);
 
             /*object.put("nombre", "Jack Hack");
             object.put("score", new Integer(200));
