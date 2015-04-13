@@ -2,7 +2,10 @@ package com.olimpiadafdi.quicktest.app;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,14 +45,16 @@ public class MainFragment extends Fragment {
     private Button button3;
     private Button button4;
     private TextView textView_question;
-    private TextView textView_version;
     private TextView textView_questionCount;
+    private TextView textView_countDown;
+    private CountDownTimer countDown;
+    private static long timestamp;
 
     public MainFragment(){}
 
-    /*public interface loginInterface{
-        public void userDetails(String nick, String pass, boolean remember);
-    }*/
+    public interface mainInterface{
+        public void backToMenu();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,16 +65,20 @@ public class MainFragment extends Fragment {
         //Asociamos los widgets del layout a variables java
         this.textView_question = (TextView) rootView.findViewById(R.id.textView_question);
         this.textView_questionCount = (TextView) rootView.findViewById(R.id.textView_questionCount);
-        this.textView_version = (TextView) rootView.findViewById(R.id.textView_version);
         this.button1 = (Button) rootView.findViewById(R.id.button1);
         this.button2 = (Button) rootView.findViewById(R.id.button2);
         this.button3 = (Button) rootView.findViewById(R.id.button3);
         this.button4 = (Button) rootView.findViewById(R.id.button4);
+        this.textView_countDown = (TextView) rootView.findViewById(R.id.textView_countDown);
 
-        // Escribimos el textView que muestra la versión de la app
         Context context = activity.getApplicationContext();
-        String version = activity.getString(R.string.Version, Storage.getInstance().getVersion());
-        textView_version.setText(version);
+        String countDownString = activity.getString(R.string.countDown, "30");
+        textView_countDown.setText(countDownString);
+
+        countDown = new CountDownTimer(30000, 1) {
+            public void onTick(long millisUntilFinished) {}
+            public void onFinish() {}
+        }.start();
 
         calculaInsignias = new CalculaInsignias(activity.getApplicationContext());
 
@@ -121,27 +130,30 @@ public class MainFragment extends Fragment {
         Context context = activity.getApplicationContext();
 
         //Calculamos las insignias:
-        calculaInsignias.nuevaPregunta(q, answer);
+        calculaInsignias.nuevaPregunta(q, answer,timestamp);
 
+        String text;
         if (answer == q.getCorrect()){
-            String text = context.getString(R.string.correct_answer);
-            int duration = Toast.LENGTH_SHORT;
-
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
-
-            if (Storage.getInstance().getQuestionsAlreadyAsked().size()<10){
-                JsonRequest jsonRequest = new JsonRequest(GETQUESTION, context, updateDataSuccess, updateDataError, null);
-                jsonRequest.request();
-            }
-
+            text = context.getString(R.string.correct_answer);
         }
         else{
-            String text = context.getString(R.string.incorrect_answer);
-            int duration = Toast.LENGTH_SHORT;
+            text = context.getString(R.string.incorrect_answer);
+        }
+        int duration = Toast.LENGTH_SHORT;
 
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+
+        if (Storage.getInstance().getQuestionsAlreadyAsked().size()<10){
+            JsonRequest jsonRequest = new JsonRequest(GETQUESTION, context, updateDataSuccess, updateDataError, null);
+            jsonRequest.request();
+        }
+        else{
+            try{
+                ((mainInterface) activity).backToMenu();
+            }catch (ClassCastException e){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -207,6 +219,30 @@ public class MainFragment extends Fragment {
                     q.setCorrect(4);
 
                 Storage.getInstance().setQuestion(q);
+
+                countDown.cancel();
+                countDown = new CountDownTimer(30000, 1) {
+                    public void onTick(long millisUntilFinished) {
+                        timestamp = 30000 - millisUntilFinished;
+                        Context context = activity.getApplicationContext();
+                        String countdown = activity.getString(R.string.countDown, Long.toString(millisUntilFinished / 1000));
+                        textView_countDown.setText(countdown);
+                    }
+                    public void onFinish() {
+                        Context context = activity.getApplicationContext();
+                        String text = activity.getString(R.string.timesUp);
+                        int duration = Toast.LENGTH_SHORT;
+
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+
+                        try{
+                            ((mainInterface) activity).backToMenu();
+                        }catch (ClassCastException e){
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
 
                 //AlertDialogManager d = new AlertDialogManager();
                 //d.showAlertDialog(getApplicationContext(), "Correcto", "Muy bien",true);

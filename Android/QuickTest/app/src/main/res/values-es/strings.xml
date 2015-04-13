@@ -16,4 +16,10 @@
     <string name="correct_answer">¡Correcta!</string>
     <string name="incorrect_answer">¡Respuesta incorrecta!</string>
     <string name="not_connected">No estamos conectados a Internet</string>
+    <string name="countDown">%1$s segundos</string>
+    <string name="exit">Salir</string>
+    <string name="newGame">Nuevo Juego</string>
+    <string name="score">Puntuación</string>
+    <string name="goodbye">¡Hasta pronto!</string>
+    <string name="timesUp">¡Se acabó el tiempo!</string>
 </resources>

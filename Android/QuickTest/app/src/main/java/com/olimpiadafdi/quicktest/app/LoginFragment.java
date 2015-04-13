@@ -51,7 +51,6 @@ public class LoginFragment extends Fragment {
         this.button_login = (Button) rootView.findViewById(R.id.button_login);
 
         SharedPrefInfo info = new SharedPrefInfo();
-
         SharedPreferences pref = activity.getApplicationContext().getSharedPreferences(info.PREF_NAME, info.PRIVATE_MODE);
         if (pref.contains(info.KEY_NICK) && pref.contains(info.KEY_PASSWORD)){
             this.editText_nick.setText(pref.getString(info.KEY_NICK, null));

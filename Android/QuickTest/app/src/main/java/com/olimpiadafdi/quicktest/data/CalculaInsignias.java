@@ -32,7 +32,7 @@ public class CalculaInsignias {
     Context context;
     private int cont;
     private ArrayList<Integer> tipos;
-    private int timeLeft;
+    private ArrayList<Long> timeStamp;
     String text;
 
     public CalculaInsignias(Context context){
@@ -43,35 +43,72 @@ public class CalculaInsignias {
         tipos = new ArrayList<Integer>();
         for (int i=1; i<=NUM_TIPOS; i++)
             tipos.add(0);
+
+        timeStamp = new ArrayList<Long>();
+        for (int i=1; i<=10; i++)
+            timeStamp.add(Long.valueOf("-1"));
     }
 
-    public void nuevaPregunta(Question q, int r) {
+    public void nuevaPregunta(Question q, int r, long ts) {
         this.question = q;
         this.resp = r;
-        calculaInsignias();
-    }
 
-    public void calculaInsignias(){
         int tipo = question.getTipo();
         tipo -= 1;
-        if (resp == question.getCorrect()){
-            cont++;
-            tipos.set(tipo, tipos.get(tipo) + 1);
-        }
 
+        if (resp == question.getCorrect()){
+            tipos.set(tipo, tipos.get(tipo) + 1);
+            timeStamp.set(cont, ts);
+            Log.d("QuickTest - Timestamp", "Timestamp: "+ ts);
+        }
+        cont++;
+
+        calculaInsignias(tipo);
+    }
+
+    public int getCorrectas(){
         int correctas = 0;
         for (int i = 0; i < NUM_TIPOS; i++) {
             correctas += tipos.get(i);
         }
+        return correctas;
+    }
+    public long getTiempoTotal(){
+        long t = 0;
+        for (int i = 0; i <10; i++) {
+            if (timeStamp.get(i)>0) {
+                t += timeStamp.get(i);
+            }
+        }
+        return t;
+    }
+
+    public void calculaInsignias(int tipo){
+        int correctas = getCorrectas();
         if (correctas == 10){
             triggerInsignia_01();   // REY: Todas acertadas
         }
         if (correctas == 7){
             triggerInsignia_02();   // EL 7 MAGICO: 7 aciertos
         }
+        if (correctas == 5){        // RAPIDO Y EFICAZ: 5 aciertos en 30 segundos
+            for (int i = 0; i < 10-5; i++) {
+                long ts1 = timeStamp.get(i);
+                long ts2 = timeStamp.get(i+1);
+                long ts3 = timeStamp.get(i+2);
+                long ts4 = timeStamp.get(i+3);
+                long ts5 = timeStamp.get(i+4);
+
+                if (ts1>0 && ts2>0 && ts3>0 && ts4>0 && ts5>0) {
+                    if (ts1 + ts2 + ts3 + ts4 + ts5 <= 30000) {
+                        triggerInsignia_03();
+                    }
+                }
+            }
+        }
         int num = tipos.get(tipo);     // Acertar 3 preguntas de un mismo tipo
         if (num==3){
-            triggerInsignia_03(tipo);
+            triggerInsignia_04(tipo);
         }
     }
 
@@ -97,7 +134,18 @@ public class CalculaInsignias {
         text = "¡Desbloqueada la Insignia 'EL 7 MAGICO'!";
     }
 
-    public void triggerInsignia_03(int tipo){
+    public void triggerInsignia_03(){
+        // Insignia 03:
+        // RAPIDO Y EFICAZ: 5 aciertos en 30 segundos
+
+        String s[] = {Storage.getInstance().getNick(), Integer.toString(3)};
+        JsonRequest jsonRequest = new JsonRequest(UNLOCKBADGE, context, updateDataSuccess, updateDataError, s);
+        jsonRequest.request();
+
+        text = "¡Desbloqueada la Insignia 'RAPIDO Y EFICAZ'!";
+    }
+
+    public void triggerInsignia_04(int tipo){
         // Insignia 04-09:
         // Accertar 3 preguntas de un tipo
 
@@ -129,7 +177,7 @@ public class CalculaInsignias {
         JsonRequest jsonRequest = new JsonRequest(UNLOCKBADGE, context, updateDataSuccess, updateDataError, s);
         jsonRequest.request();
 
-        text = "¡Desbloqueada la Insignia 'GENIO tipo "+tipoGenio+"'!";
+        text = "¡Desbloqueada la Insignia 'GENIO en "+tipoGenio+"'!";
     }
 
     private Runnable updateDataSuccess = new Runnable() {
@@ -138,7 +186,7 @@ public class CalculaInsignias {
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
 
-            Log.d("QuickTest", "Badge unlocked");
+            Log.d("QuickTest", "Badge unlocked" + text);
         }
     };
 

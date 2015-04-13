@@ -18,5 +18,11 @@
     <string name="correct_answer">Correct!</string>
     <string name="not_connected">We are not connected to the Internet</string>
     <string name="connected">Retrieving the questions from our servers</string>
+    <string name="countDown">%1$s seconds</string>
+    <string name="newGame">New Game</string>
+    <string name="score">Score</string>
+    <string name="exit">Exit</string>
+    <string name="goodbye">Good bye!</string>
+    <string name="timesUp">Time\'s Up!</string>
 
 </resources>

@@ -9,11 +9,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.olimpiadafdi.quicktest.app.LoginFragment;
+import com.olimpiadafdi.quicktest.app.MenuFragment;
 import com.olimpiadafdi.quicktest.app.MainFragment;
 import com.olimpiadafdi.quicktest.data.SharedPrefInfo;
 
 public class MainActivity extends ActionBarActivity
-        implements LoginFragment.loginInterface{
+        implements LoginFragment.loginInterface, MenuFragment.menuInterface, MainFragment.mainInterface {
 
 
     @Override
@@ -53,26 +54,36 @@ public class MainActivity extends ActionBarActivity
 
     //Override the login method here
     @Override
-    public void userDetails(String nick, String pass, boolean remember)
-    {
+    public void userDetails(String nick, String pass, boolean remember) {
         SharedPrefInfo info = new SharedPrefInfo();
-
         SharedPreferences pref = getApplicationContext().getSharedPreferences(info.PREF_NAME, info.PRIVATE_MODE);
         SharedPreferences.Editor editor = pref.edit();
-
-        if (!remember){
+        if (!remember) {
             //editor.remove(info.KEY_NICK);
             //editor.remove(info.KEY_PASSWORD);
             editor.clear();
-        }
-        else {
+        } else {
             editor.putString(info.KEY_NICK, nick);
             editor.putString(info.KEY_PASSWORD, pass);
         }
         editor.commit();
 
-        // TODO check user is truly logged in
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack so the user can navigate back
+        transaction.replace(R.id.container, new MenuFragment());
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
+
+    }
+
+    //Override the launchGame method here
+    @Override
+    public void launchGame() {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -86,5 +97,18 @@ public class MainActivity extends ActionBarActivity
 
     }
 
+    //Override the backToMenu method here
+    @Override
+    public void backToMenu() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack so the user can navigate back
+        transaction.replace(R.id.container, new MenuFragment());
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
+    }
 }
