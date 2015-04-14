@@ -1,6 +1,7 @@
 package com.olimpiadafdi.quicktest.app;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -22,6 +23,7 @@ import com.olimpiadafdi.quicktest.connection.JsonRequest;
 import com.olimpiadafdi.quicktest.data.Answer;
 import com.olimpiadafdi.quicktest.data.CalculaInsignias;
 import com.olimpiadafdi.quicktest.data.Question;
+import com.olimpiadafdi.quicktest.data.SharedPrefInfo;
 import com.olimpiadafdi.quicktest.data.Storage;
 
 
@@ -53,7 +55,7 @@ public class MainFragment extends Fragment {
     public MainFragment(){}
 
     public interface mainInterface{
-        public void backToMenu();
+        public void showScores();
     }
 
     @Override
@@ -150,7 +152,14 @@ public class MainFragment extends Fragment {
         }
         else{
             try{
-                ((mainInterface) activity).backToMenu();
+                SharedPrefInfo info = new SharedPrefInfo();
+                SharedPreferences pref = activity.getApplicationContext().getSharedPreferences(info.PREF_NAME, info.PRIVATE_MODE);
+                SharedPreferences.Editor editor = pref.edit();
+                    editor.putString(info.KEY_ANSWERS, Integer.toString(calculaInsignias.getCorrectas()));
+                    editor.putString(info.KEY_TOTALTIME, Long.toString(calculaInsignias.getTiempoTotal()));
+                editor.commit();
+
+                ((mainInterface) activity).showScores();
             }catch (ClassCastException e){
                 e.printStackTrace();
             }
@@ -237,7 +246,7 @@ public class MainFragment extends Fragment {
                         toast.show();
 
                         try{
-                            ((mainInterface) activity).backToMenu();
+                            ((mainInterface) activity).showScores();
                         }catch (ClassCastException e){
                             e.printStackTrace();
                         }

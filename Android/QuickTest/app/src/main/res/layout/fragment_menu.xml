@@ -11,8 +11,7 @@
         android:layout_height="wrap_content"
         android:text="@string/newGame"
         android:id="@+id/button_newGame"
-        android:layout_marginTop="135dp"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
     <Button
@@ -40,6 +39,16 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/app_name"
+        android:id="@+id/textView_title"
+        android:layout_above="@+id/button_newGame"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="91dp" />
 
 
 </RelativeLayout>

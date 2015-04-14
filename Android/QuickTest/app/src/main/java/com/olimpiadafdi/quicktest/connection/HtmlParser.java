@@ -3,12 +3,15 @@ package com.olimpiadafdi.quicktest.connection;
 import android.util.Log;
 
 import com.olimpiadafdi.quicktest.data.Answer;
+import com.olimpiadafdi.quicktest.data.Badge;
 import com.olimpiadafdi.quicktest.data.Question;
 import com.olimpiadafdi.quicktest.data.Storage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class HtmlParser {
 
@@ -70,5 +73,34 @@ public class HtmlParser {
             Log.e("QuickTest", "There was an error parsing the JSON", e);
         }
         return null;
+    }
+
+    public static boolean parseListBadges(String html){
+        ArrayList<Badge> l = new ArrayList<Badge>();
+        boolean b = false;
+        try {
+            JSONObject jObj = new JSONObject(html);
+            int code = jObj.getInt(CODE);
+            String message = jObj.getString(MESSAGE);
+            JSONObject result = jObj.getJSONObject(RESULT);
+
+            if (code==0){
+                String usuario = result.getString("usuario");
+                JSONArray insignias = result.getJSONArray("insignias");
+                for (int i=0; i<insignias.length(); i++){
+                    JSONObject insignia = insignias.getJSONObject(i);
+                        int idInsignia = insignia.getInt("idInsignia");
+                        String descCorta = insignia.getString("descCorta");
+                        String descLarga = insignia.getString("descLarga");
+                        int puntuacion = insignia.getInt("puntuacion");
+                    l.add(new Badge(idInsignia, descCorta, descLarga, puntuacion));
+                }
+                Storage.getInstance().setListBadges(l);
+                b = true;
+            }
+        } catch (JSONException e) {
+            Log.e("QuickTest", "There was an error parsing the JSON", e);
+        }
+        return b;
     }
 }

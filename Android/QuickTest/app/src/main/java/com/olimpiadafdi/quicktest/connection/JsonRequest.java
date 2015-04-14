@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.olimpiadafdi.quicktest.data.Badge;
 import com.olimpiadafdi.quicktest.data.Question;
 import com.olimpiadafdi.quicktest.data.Storage;
 
@@ -25,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class JsonRequest {
 
@@ -36,6 +38,9 @@ public class JsonRequest {
 
     private static String UNLOCKBADGE = "unlockBadge";
     private static String url_unlockBadge = "http://ssii2014.e-ucm.es:80//OlimpiadaFDIServices/rest/insignias/asignarInsigniaAUsuario";
+
+    private static String SHOWBADGES = "showBadges";
+    private static String url_showBadges = "http://ssii2014.e-ucm.es//OlimpiadaFDIServices/rest/insignias/insigniasUsuario/";
 
     private String uri;
     private String purpose;
@@ -54,6 +59,9 @@ public class JsonRequest {
 
         else if (purpose.equalsIgnoreCase(UNLOCKBADGE))
             this.uri = url_unlockBadge;
+
+        else if (purpose.equalsIgnoreCase(SHOWBADGES))
+            this.uri = url_showBadges;
 
         this.purpose = purpose;
         this.data = data;
@@ -110,15 +118,24 @@ public class JsonRequest {
                     result = false;
                 }
                 Log.i("QuickTest", "Parsing - " + UNLOCKBADGE);
-                result = HtmlParser.checkLogin(response);
+                //result = HtmlParser.checkLogin(response);
             }
 
+            if (purpose.equalsIgnoreCase(SHOWBADGES)){
+                Log.i("QuickTest", "Do in background - " + SHOWBADGES);
+                uri += Storage.getInstance().getNick();
+                String response = GET(uri);
+                if (response == null) {
+                    result = false;
+                }
+                result = HtmlParser.parseListBadges(response);
+                Log.i("QuickTest", "Parsing - " + SHOWBADGES);
+            }
             return result;
         }
 
         private String GET(String url) {
             String output = null;
-
             // Create a new HttpClient and Post Header
             HttpParams myParams = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(myParams, 10000);
@@ -220,7 +237,6 @@ public class JsonRequest {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        System.out.println(object);
         return object;
     }
 
@@ -237,7 +253,6 @@ public class JsonRequest {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        System.out.println(object);
         return object;
     }
 }

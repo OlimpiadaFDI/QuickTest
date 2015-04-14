@@ -80,6 +80,7 @@ public class CalculaInsignias {
                 t += timeStamp.get(i);
             }
         }
+        t = t/1000;
         return t;
     }
 

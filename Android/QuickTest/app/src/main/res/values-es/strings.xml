@@ -22,4 +22,8 @@
     <string name="score">Puntuación</string>
     <string name="goodbye">¡Hasta pronto!</string>
     <string name="timesUp">¡Se acabó el tiempo!</string>
+    <string name="backToMenu">Volver al Menú</string>
+    <string name="badges">Estas son las insignias que has desbloqueado:</string>
+    <string name="lastGameData">Has respondido correctamente %1$s preguntas de 10 en %2$s segundos</string>
+    <string name="lastGameInfo">Los datos de tu último juego:</string>
 </resources>

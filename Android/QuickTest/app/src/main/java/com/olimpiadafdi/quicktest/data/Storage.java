@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Storage {
 
-    private static final String VERSION = "3.0";
+    private static final String VERSION = "3.5";
 
     private static Storage ourInstance = new Storage();
 
@@ -21,6 +21,7 @@ public class Storage {
     private String resultErrorLogin;
     private ArrayList<Integer> questionsAlreadyAsked = new ArrayList<Integer>();
     private Question question;
+    private ArrayList<Badge> listBadges = new ArrayList<Badge>();
 
     public String getVersion(){
         return VERSION;
@@ -56,5 +57,13 @@ public class Storage {
 
     public ArrayList<Integer> getQuestionsAlreadyAsked() {
         return questionsAlreadyAsked;
+    }
+
+    public ArrayList<Badge> getListBadges() {
+        return listBadges;
+    }
+
+    public void setListBadges(ArrayList<Badge> listBadges) {
+        this.listBadges = listBadges;
     }
 }

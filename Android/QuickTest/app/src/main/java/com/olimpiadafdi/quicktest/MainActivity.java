@@ -11,10 +11,12 @@ import android.view.MenuItem;
 import com.olimpiadafdi.quicktest.app.LoginFragment;
 import com.olimpiadafdi.quicktest.app.MenuFragment;
 import com.olimpiadafdi.quicktest.app.MainFragment;
+import com.olimpiadafdi.quicktest.app.ScoreFragment;
 import com.olimpiadafdi.quicktest.data.SharedPrefInfo;
 
 public class MainActivity extends ActionBarActivity
-        implements LoginFragment.loginInterface, MenuFragment.menuInterface, MainFragment.mainInterface {
+        implements LoginFragment.loginInterface, MenuFragment.menuInterface,
+        MainFragment.mainInterface, ScoreFragment.scoreInterface {
 
 
     @Override
@@ -106,6 +108,21 @@ public class MainActivity extends ActionBarActivity
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack so the user can navigate back
         transaction.replace(R.id.container, new MenuFragment());
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
+    }
+
+    //Override the backToMenu method here
+    @Override
+    public void showScores() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack so the user can navigate back
+        transaction.replace(R.id.container, new ScoreFragment());
         transaction.addToBackStack(null);
 
         // Commit the transaction

@@ -16,6 +16,12 @@ public class SharedPrefInfo {
     // Email address (make variable public to access from outside)
     public static final String KEY_PASSWORD = "password";
 
+    // Number of successful answers
+    public static final String KEY_ANSWERS = "gameAnswers";
+
+    // Number of successful answers
+    public static final String KEY_TOTALTIME = "gameTime";
+
     public SharedPrefInfo(){}
 
 }

@@ -26,6 +26,7 @@ public class MenuFragment extends Fragment {
 
     public interface menuInterface{
         public void launchGame();
+        public void showScores();
     }
 
     @Override
@@ -70,7 +71,11 @@ public class MenuFragment extends Fragment {
         View.OnClickListener handler_score = new View.OnClickListener(){
             @Override
             public void onClick(View v){
-
+                try{
+                    ((menuInterface) activity).showScores();
+                }catch (ClassCastException e){
+                    e.printStackTrace();
+                }
             }
         };
         View.OnClickListener handler_exit = new View.OnClickListener(){

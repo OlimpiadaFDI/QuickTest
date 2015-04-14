@@ -24,5 +24,9 @@
     <string name="exit">Exit</string>
     <string name="goodbye">Good bye!</string>
     <string name="timesUp">Time\'s Up!</string>
+    <string name="lastGameInfo">Your last game details:</string>
+    <string name="badges">These are the badges you have unlocked:</string>
+    <string name="lastGameData">You succesfully answered %1$s questions out of 10 in %2$s seconds</string>
+    <string name="backToMenu">Back to Main Menu</string>
 
 </resources>
