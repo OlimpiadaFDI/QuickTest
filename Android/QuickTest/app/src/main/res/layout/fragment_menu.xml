@@ -48,7 +48,10 @@
         android:id="@+id/textView_title"
         android:layout_above="@+id/button_newGame"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="91dp" />
+        android:layout_marginBottom="91dp"
+        android:textColor="#ffff3844"
+        android:textStyle="bold|italic"
+        android:textSize="@dimen/titleSize" />
 
 
 </RelativeLayout>

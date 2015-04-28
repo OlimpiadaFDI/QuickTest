@@ -40,6 +40,29 @@ public class HtmlParser {
     return b;
     }
 
+    public static boolean checkBadge(String html){
+        Boolean b = false;
+        try{
+            JSONObject jObj = new JSONObject(html);
+            int code = jObj.getInt(CODE);
+            String message = jObj.getString(MESSAGE);
+            String result = jObj.getString(RESULT);
+
+            if (code==0){
+                b = true;
+                result = "Se ha desbloqueado una insignia";
+            }
+            else if (code==2){
+                b=false;
+                result = "Ya se disponía de la insignia";
+            }
+            Log.i("QuickTest", result);
+        } catch (JSONException e) {
+            Log.e("QuickTest", "There was an error parsing the JSON checkBadge", e);
+        }
+        return b;
+    }
+
     public static Question parseQuestion(String html){
         Question q = null;
         try {
@@ -99,7 +122,7 @@ public class HtmlParser {
                 b = true;
             }
         } catch (JSONException e) {
-            Log.e("QuickTest", "There was an error parsing the JSON", e);
+            Log.e("QuickTest", "There was an error parsing the JSON parseListBadges", e);
         }
         return b;
     }

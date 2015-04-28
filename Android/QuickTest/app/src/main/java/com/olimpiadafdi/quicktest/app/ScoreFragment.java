@@ -14,15 +14,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TwoLineListItem;
 
 import com.olimpiadafdi.quicktest.R;
 import com.olimpiadafdi.quicktest.connection.JsonRequest;
 import com.olimpiadafdi.quicktest.data.Badge;
 import com.olimpiadafdi.quicktest.data.SharedPrefInfo;
 import com.olimpiadafdi.quicktest.data.Storage;
-
-import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
 

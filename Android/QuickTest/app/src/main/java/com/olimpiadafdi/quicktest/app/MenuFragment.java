@@ -3,6 +3,7 @@ package com.olimpiadafdi.quicktest.app;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,8 +89,13 @@ public class MenuFragment extends Fragment {
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
 
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(1);
+                new CountDownTimer(3000, 1) {
+                    public void onTick(long millisUntilFinished) {}
+                    public void onFinish() {
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                        System.exit(1);
+                    }
+                }.start();
             }
         };
         button_newGame.setOnClickListener(handler_newGame);

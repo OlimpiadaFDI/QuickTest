@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.olimpiadafdi.quicktest.data.Badge;
 import com.olimpiadafdi.quicktest.data.Question;
 import com.olimpiadafdi.quicktest.data.Storage;
 
@@ -26,7 +25,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class JsonRequest {
 
@@ -118,7 +116,7 @@ public class JsonRequest {
                     result = false;
                 }
                 Log.i("QuickTest", "Parsing - " + UNLOCKBADGE);
-                //result = HtmlParser.checkLogin(response);
+                result = HtmlParser.checkBadge(response);
             }
 
             if (purpose.equalsIgnoreCase(SHOWBADGES)){

@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -147,11 +145,13 @@ public class MainFragment extends Fragment {
         toast.show();
 
         if (Storage.getInstance().getQuestionsAlreadyAsked().size()<10){
+            countDown = null;
             JsonRequest jsonRequest = new JsonRequest(GETQUESTION, context, updateDataSuccess, updateDataError, null);
             jsonRequest.request();
         }
         else{
             try{
+                countDown = null;
                 SharedPrefInfo info = new SharedPrefInfo();
                 SharedPreferences pref = activity.getApplicationContext().getSharedPreferences(info.PREF_NAME, info.PRIVATE_MODE);
                 SharedPreferences.Editor editor = pref.edit();

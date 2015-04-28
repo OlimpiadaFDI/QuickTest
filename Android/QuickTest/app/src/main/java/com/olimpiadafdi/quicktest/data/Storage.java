@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Storage {
 
-    private static final String VERSION = "3.5";
+    private static final String VERSION = "4.0";
 
     private static Storage ourInstance = new Storage();
 

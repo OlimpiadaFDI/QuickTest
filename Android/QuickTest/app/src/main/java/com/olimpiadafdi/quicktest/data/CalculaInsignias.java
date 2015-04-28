@@ -1,7 +1,6 @@
 package com.olimpiadafdi.quicktest.data;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
