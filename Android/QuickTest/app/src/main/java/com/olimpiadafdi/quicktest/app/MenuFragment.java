@@ -89,7 +89,7 @@ public class MenuFragment extends Fragment {
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
 
-                new CountDownTimer(3000, 1) {
+                new CountDownTimer(1000, 1) {
                     public void onTick(long millisUntilFinished) {}
                     public void onFinish() {
                         android.os.Process.killProcess(android.os.Process.myPid());

@@ -92,19 +92,27 @@ public class CalculaInsignias {
             triggerInsignia_02();   // EL 7 MAGICO: 7 aciertos
         }
         if (correctas == 5){        // RAPIDO Y EFICAZ: 5 aciertos en 30 segundos
-            for (int i = 0; i < 10-5; i++) {
-                long ts1 = timeStamp.get(i);
-                long ts2 = timeStamp.get(i+1);
-                long ts3 = timeStamp.get(i+2);
-                long ts4 = timeStamp.get(i+3);
-                long ts5 = timeStamp.get(i+4);
-
-                if (ts1>0 && ts2>0 && ts3>0 && ts4>0 && ts5>0) {
-                    if (ts1 + ts2 + ts3 + ts4 + ts5 <= 30000) {
-                        triggerInsignia_03();
-                    }
-                }
+            long lastTS = 0;
+            for (int i = 0; i < 10; i++) {
+                if (timeStamp.get(i)>0)
+                    lastTS = timeStamp.get(i);
             }
+            if (lastTS <= 30000)
+                triggerInsignia_03();
+            /*for (int i = 0; i < 10-5; i++) {
+                    long ts1 = timeStamp.get(i);
+                    long ts2 = timeStamp.get(i+1);
+                    long ts3 = timeStamp.get(i+2);
+                    long ts4 = timeStamp.get(i+3);
+                    long ts5 = timeStamp.get(i+4);
+
+                    if (ts1>0 && ts2>0 && ts3>0 && ts4>0 && ts5>0) {
+                        //if (ts1 + ts2 + ts3 + ts4 + ts5 <= 30000) {
+                        if (ts5 - ts1 <= 30000) {
+                            triggerInsignia_03();
+                        }
+                    }
+            }*/
         }
         int num = tipos.get(tipo);     // Acertar 3 preguntas de un mismo tipo
         if (num==3){

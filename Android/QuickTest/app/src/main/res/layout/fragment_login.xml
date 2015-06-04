@@ -69,5 +69,17 @@
         android:layout_above="@+id/textView_login"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/register"
+        android:id="@+id/textView_register"
+        android:layout_alignBottom="@+id/button_login"
+        android:layout_alignLeft="@+id/checkBox_remember"
+        android:layout_alignStart="@+id/checkBox_remember"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:textColor="#ff0000ff" />
+
 
 </RelativeLayout>

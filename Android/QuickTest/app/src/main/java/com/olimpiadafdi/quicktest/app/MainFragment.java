@@ -49,6 +49,7 @@ public class MainFragment extends Fragment {
     private TextView textView_countDown;
     private CountDownTimer countDown;
     private static long timestamp;
+    private boolean areWeStarted = false;
 
     public MainFragment(){}
 
@@ -72,13 +73,29 @@ public class MainFragment extends Fragment {
         this.textView_countDown = (TextView) rootView.findViewById(R.id.textView_countDown);
 
         Context context = activity.getApplicationContext();
-        String countDownString = activity.getString(R.string.countDown, "30");
+        String countDownString = activity.getString(R.string.countDown, "60");
         textView_countDown.setText(countDownString);
 
-        countDown = new CountDownTimer(30000, 1) {
-            public void onTick(long millisUntilFinished) {}
-            public void onFinish() {}
-        }.start();
+        timestamp = 60000;
+
+        countDown = new CountDownTimer(60000, 1) {
+            public void onTick(long millisUntilFinished) {
+                timestamp = 60000 - millisUntilFinished;
+                Context context = activity.getApplicationContext();
+                String countdown = activity.getString(R.string.countDown, Long.toString(millisUntilFinished / 1000));
+                textView_countDown.setText(countdown);
+            }
+            public void onFinish() {
+                Context context = activity.getApplicationContext();
+                String text = activity.getString(R.string.timesUp);
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+
+                finishGame();
+            }
+        };
 
         calculaInsignias = new CalculaInsignias(activity.getApplicationContext());
 
@@ -145,24 +162,11 @@ public class MainFragment extends Fragment {
         toast.show();
 
         if (Storage.getInstance().getQuestionsAlreadyAsked().size()<10){
-            countDown = null;
             JsonRequest jsonRequest = new JsonRequest(GETQUESTION, context, updateDataSuccess, updateDataError, null);
             jsonRequest.request();
         }
         else{
-            try{
-                countDown = null;
-                SharedPrefInfo info = new SharedPrefInfo();
-                SharedPreferences pref = activity.getApplicationContext().getSharedPreferences(info.PREF_NAME, info.PRIVATE_MODE);
-                SharedPreferences.Editor editor = pref.edit();
-                    editor.putString(info.KEY_ANSWERS, Integer.toString(calculaInsignias.getCorrectas()));
-                    editor.putString(info.KEY_TOTALTIME, Long.toString(calculaInsignias.getTiempoTotal()));
-                editor.commit();
-
-                ((mainInterface) activity).showScores();
-            }catch (ClassCastException e){
-                e.printStackTrace();
-            }
+            finishGame();
         }
     }
 
@@ -193,9 +197,31 @@ public class MainFragment extends Fragment {
         jsonRequest.request();
     }
 
+    public void finishGame(){
+        countDown.cancel();
+        countDown = null;
+        SharedPrefInfo info = new SharedPrefInfo();
+        SharedPreferences pref = activity.getApplicationContext().getSharedPreferences(info.PREF_NAME, info.PRIVATE_MODE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(info.KEY_ANSWERS, Integer.toString(calculaInsignias.getCorrectas()));
+        editor.putString(info.KEY_TOTALTIME, Long.toString(calculaInsignias.getTiempoTotal()));
+        editor.commit();
+        try{
+            ((mainInterface) activity).showScores();
+        }catch (ClassCastException e){
+            e.printStackTrace();
+        }
+    }
+
     private Runnable updateDataSuccess = new Runnable() {
         public void run() {
-            Log.d("QuickTest", "success");
+            Log.d("QuickTest", "retrieved question successfully");
+
+            if (!areWeStarted){
+                areWeStarted = true;
+                countDown.start();
+            }
+
             Question q = Storage.getInstance().getQuestion();
             Storage.getInstance().getQuestionsAlreadyAsked().add(q.getId());
 
@@ -228,30 +254,6 @@ public class MainFragment extends Fragment {
                     q.setCorrect(4);
 
                 Storage.getInstance().setQuestion(q);
-
-                countDown.cancel();
-                countDown = new CountDownTimer(30000, 1) {
-                    public void onTick(long millisUntilFinished) {
-                        timestamp = 30000 - millisUntilFinished;
-                        Context context = activity.getApplicationContext();
-                        String countdown = activity.getString(R.string.countDown, Long.toString(millisUntilFinished / 1000));
-                        textView_countDown.setText(countdown);
-                    }
-                    public void onFinish() {
-                        Context context = activity.getApplicationContext();
-                        String text = activity.getString(R.string.timesUp);
-                        int duration = Toast.LENGTH_SHORT;
-
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.show();
-
-                        try{
-                            ((mainInterface) activity).showScores();
-                        }catch (ClassCastException e){
-                            e.printStackTrace();
-                        }
-                    }
-                }.start();
 
                 //AlertDialogManager d = new AlertDialogManager();
                 //d.showAlertDialog(getApplicationContext(), "Correcto", "Muy bien",true);
