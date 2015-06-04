@@ -17,8 +17,7 @@ public class Storage {
 
     // -------------------------------------------------------------------------------
 
-    private String registerURL = "http://www.google.es";
-    private String nick;
+    String nick;
     private String resultErrorLogin;
     private ArrayList<Integer> questionsAlreadyAsked = new ArrayList<Integer>();
     private Question question;
@@ -28,9 +27,6 @@ public class Storage {
         return VERSION;
     }
 
-    public String getRegisterURL() {
-        return registerURL;
-    }
 
     public void setNick(String s){
         this.nick = s;

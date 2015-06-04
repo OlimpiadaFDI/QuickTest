@@ -2,9 +2,7 @@ package com.olimpiadafdi.quicktest.app;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.olimpiadafdi.quicktest.R;
@@ -34,7 +31,6 @@ public class LoginFragment extends Fragment {
     private EditText editText_pass;
     private CheckBox checkBox_remember;
     private Button button_login;
-    private TextView textView_register;
 
     public LoginFragment(){}
 
@@ -53,7 +49,6 @@ public class LoginFragment extends Fragment {
         this.editText_pass = (EditText) rootView.findViewById(R.id.editText_pass);
         this.checkBox_remember = (CheckBox) rootView.findViewById(R.id.checkBox_remember);
         this.button_login = (Button) rootView.findViewById(R.id.button_login);
-        this.textView_register = (TextView) rootView.findViewById(R.id.textView_register);
 
         SharedPrefInfo info = new SharedPrefInfo();
         SharedPreferences pref = activity.getApplicationContext().getSharedPreferences(info.PREF_NAME, info.PRIVATE_MODE);
@@ -61,16 +56,6 @@ public class LoginFragment extends Fragment {
             this.editText_nick.setText(pref.getString(info.KEY_NICK, null));
             this.editText_pass.setText(pref.getString(info.KEY_PASSWORD, null));
         }
-
-        textView_register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = Storage.getInstance().getRegisterURL();
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-            }
-        });
 
         this.handleButtons();
         return rootView;

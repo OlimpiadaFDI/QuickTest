@@ -116,9 +116,7 @@ public class HtmlParser {
                         String descCorta = insignia.getString("descCorta");
                         String descLarga = insignia.getString("descLarga");
                         int puntuacion = insignia.getInt("puntuacion");
-
-                    if (idInsignia==1 || idInsignia==2 || idInsignia==3 || idInsignia==4 || idInsignia==5 || idInsignia==6 || idInsignia==7 || idInsignia==8 || idInsignia==9)
-                        l.add(new Badge(idInsignia, descCorta, descLarga, puntuacion));
+                    l.add(new Badge(idInsignia, descCorta, descLarga, puntuacion));
                 }
                 Storage.getInstance().setListBadges(l);
                 b = true;
