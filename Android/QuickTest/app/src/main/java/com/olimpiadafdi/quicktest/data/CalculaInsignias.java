@@ -73,12 +73,29 @@ public class CalculaInsignias {
         return correctas;
     }
     public long getTiempoTotal(){
-        long t = 0;
+        long t = 60000;
+        long primeraRespuesta = -1;
+        long ultimaRespuesta = -1;
         for (int i = 0; i <10; i++) {
+            if (timeStamp.get(i)>0) {
+                ultimaRespuesta = timeStamp.get(i);
+            }
+        }
+        for (int i = 9; i>=0; i++) {
+            if (timeStamp.get(i)>0) {
+                primeraRespuesta = timeStamp.get(i);
+            }
+        }
+        if (primeraRespuesta>0 && ultimaRespuesta>0){
+            t = ultimaRespuesta - primeraRespuesta;
+        }
+
+        /*for (int i = 0; i <10; i++) {
             if (timeStamp.get(i)>0) {
                 t += timeStamp.get(i);
             }
         }
+        */
         t = t/1000;
         return t;
     }
